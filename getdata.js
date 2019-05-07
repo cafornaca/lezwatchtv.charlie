@@ -45,8 +45,6 @@ function combineData(data) {
     showData[key] = String(data[key]);  // Done twice because the show "24" goofs this up.
     showData[key] = data[key];
   });
-  // document.getElementById("target").innerHTML = showData;  // HTML version
-  //$("#target").append(showData);  // JQuery version
   setTimeout(getAllShowData, 2000)
 }
 
