@@ -1,23 +1,35 @@
 /*
 https://lezwatchtv.com/wp-json/lwtv/v1/stats/shows/complex/
-Work on the combineData function next time.
 */
+getAllShowData()
+console.log("I'm gay. ;)")
 
-var pageNum = 1;
-var showData;
+var pageNum = 0;
+var showData = {};
 
-function getAllShowData(){
+function getAllShowData(){  // Function that makes ajax call
 // Ajax is always going to give you succ with data object or error with err object.
   $.ajax({
   url: 'https://lezwatchtv.com/wp-json/lwtv/v1/stats/shows/complex/?page=' + pageNum,
   method: 'GET',
   timeout: 2000,
-
-  success: function(data) {
+  success: function(data) { // Happens when you get back the JSON from the page.
+    // End case. Check for length of [] using === to not get 0, null, etc... javascript...
+    if (data.length === 0) {
+      // Make text file with format JSON, encode storageObj into JSON
+      var dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(showData));
+      // Set the target
+      var dlAnchorElem = document.getElementById('downloadAnchorElem');
+      // Reference goes to dataStr
+      document.getElementById('downloadAnchorElem').setAttribute("href", dataStr);
+      // Give attributes...
+      document.getElementById('downloadAnchorElem').setAttribute("download", "showData.json");
+      document.getElementById('downloadAnchorElem').click();
+      return;
+    }
     pageNum++;
     console.log(data);  // For debugging.
-    // Call a function here to append each page of JSON.
-    combineData();
+    combineData(data);
   },
 
 // If this doesn't work, it might be because it's specific to GitHub's API:
@@ -28,11 +40,21 @@ function getAllShowData(){
   }); // End of Ajax method call.
 }
 
-function combineData(input) {
-  // TO-DO
+function combineData(data) {
+  Object.keys(data).forEach(function(key, index) {
+    showData[key] = String(data[key]);  // Done twice because the show "24" goofs this up.
+    showData[key] = data[key];
+  });
+  // document.getElementById("target").innerHTML = showData;  // HTML version
+  //$("#target").append(showData);  // JQuery version
+  setTimeout(getAllShowData, 2000)
 }
 
+
+
 /*
+My notes on JS stuff:
+
 function name(param, param2){ //standard
 //do stuff here
 }
